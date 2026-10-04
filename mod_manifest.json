@@ -1,0 +1,12 @@
+{
+  "id": "StandardSeedHost",
+  "pck_name": "StandardSeedHost",
+  "version": "0.2.0",
+  "name": "联机指定种子开局 / Standard Seed Host",
+  "author": "@Bilibili我叫煎包",
+  "description": "在标准模式多人房与单机开局的选人界面增加种子输入框，房主可指定本局种子（空则随机），通过原生 LobbySeedChangedMessage 同步给客机。一份包体同时支持正式版与 public-beta。\nAdds a seed input to the Standard-mode character select (host & singleplayer); empty means random. Synced to clients via the vanilla LobbySeedChangedMessage. One package serves every game branch.",
+  "has_pck": false,
+  "has_dll": true,
+  "affects_gameplay": false,
+  "min_game_version": "0.107.1"
+}

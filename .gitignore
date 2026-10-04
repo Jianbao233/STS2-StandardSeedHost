@@ -1,0 +1,28 @@
+# Godot / .NET build outputs
+.godot/
+bin/
+obj/
+*.dll
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+*.pck
+*.import
+project.godot.lock
+
+# Local release snapshots
+torelease/
+toRelease/
+release/
+dist/
+*.zip
+
+# build.ps1 组装出的包体（build/mods/<ModId>/，含 bin/ 下各版本实现）
+build/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+*.cache

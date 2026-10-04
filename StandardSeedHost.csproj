@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Godot.NET.Sdk/4.5.1">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <OutputType>Library</OutputType>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <RootNamespace>StandardSeedHost</RootNamespace>
+    <!--
+      版本分发：本工程产出「实现」DLL（StandardSeedHost.Impl.dll），不产出根目录的
+      StandardSeedHost.dll —— 后者由 ModVersionLoader 启动器占据（见 build.ps1）。
+      装配件名加 .Impl 后缀是为了与启动器区分，避免同名装配件冲突。
+      实现里不再使用 [ModInitializer]，改由启动器反射调用 Initialize()。
+    -->
+    <AssemblyName>StandardSeedHost.Impl</AssemblyName>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Version>0.2.0</Version>
+    <FileVersion>0.2.0</FileVersion>
+    <AssemblyVersion>0.2.0</AssemblyVersion>
+    <!-- 版本分发机制下游戏只应加载启动器，故不再直接部署到 mods/ -->
+    <CopyToGameMods Condition="'$(CopyToGameMods)' == ''">false</CopyToGameMods>
+  </PropertyGroup>
+
+  <!--
+    多版本实现
+    ==========
+    同一个工程按 GameCompat 编译出不同游戏版本可用的实现：
+
+      src/                    共享代码（补丁与种子 UI，两个版本源码一致）
+      src/versions/v107/      游戏 v0.107.x 实现入口
+      src/versions/v111/      游戏 v0.111.0 实现入口
+
+    之所以必须分两份编译而不是一份通用：实现 DLL 静态引用了 sts2.dll，
+    必须针对各版本各自的 sts2.dll 编译，运行时才能绑定到当前加载的游戏装配件。
+
+    用法：
+      dotnet build /p:GameCompat=v111 /p:Sts2DataDir=<该版本 SDK 目录>
+  -->
+  <PropertyGroup>
+    <GameCompat Condition="'$(GameCompat)' == ''">v111</GameCompat>
+    <Sts2DataDir Condition="'$(Sts2DataDir)' == ''">F:\Steam\steamapps\common\Slay the Spire 2\data_sts2_windows_x86_64</Sts2DataDir>
+    <VersionSourceDir>$(MSBuildProjectDirectory)\src\versions\$(GameCompat)</VersionSourceDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- 共享代码；版本目录单独引入 -->
+    <Compile Remove="src\versions\**\*.cs" />
+    <Compile Include="$(VersionSourceDir)\**\*.cs" />
+  </ItemGroup>
+
+  <Target Name="ValidateGameCompat" BeforeTargets="BeforeBuild">
+    <Error Condition="!Exists('$(VersionSourceDir)\ModuleInit.cs')"
+           Text="GameCompat='$(GameCompat)' 没有对应的版本源码目录：$(VersionSourceDir)" />
+    <Error Condition="!Exists('$(Sts2DataDir)\sts2.dll')"
+           Text="Sts2DataDir='$(Sts2DataDir)' 下找不到 sts2.dll。" />
+  </Target>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="sts2">
+      <HintPath>$(Sts2DataDir)\sts2.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(Sts2DataDir)\0Harmony.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="GodotSharp">
+      <HintPath>$(Sts2DataDir)\GodotSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
