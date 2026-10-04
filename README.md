@@ -1,6 +1,6 @@
 # StandardSeedHost / 联机指定种子开局
 
-> **状态**：STS2 主仓内项目（非独立 Git 仓）｜v0.2.0｜已可用（2026-08-17 首测通过）｜**未发布 / 未上传工坊**
+> **状态**：独立 Git 仓库 [`Jianbao233/STS2-StandardSeedHost`](https://github.com/Jianbao233/STS2-StandardSeedHost)（2026-10-04 自 `STS2_mod` 主仓拆分）｜v0.2.0｜已可用（2026-08-17 首测通过）｜**未发布 / 未上传工坊**
 > **包体形态**：版本分发 —— `ModVersionLoader` 启动器 + `bin/g<游戏版本>/` 各一份实现，一份包体同时支持正式版与 public-beta
 
 在 STS2 **标准模式（Standard）多人开房**与**单机开局**的选人界面加入一个种子输入框（视觉复刻自定义模式种子框），房主可指定本局种子。
